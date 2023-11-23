@@ -40,6 +40,14 @@ try:
     dbconn.commit()
 
     # Create tables
+    
+    cursor.execute("""
+        CREATE TABLE celestial_class (
+        class_id INT PRIMARY KEY AUTO_INCREMENT,
+        class_name VARCHAR(50) UNIQUE NOT NULL
+            );
+    """)
+    
     cursor.execute("""
         CREATE TABLE celestial_object (
             obj_ID BIGINT PRIMARY KEY,
@@ -80,14 +88,7 @@ try:
             FOREIGN KEY (obj_ID) REFERENCES celestial_object(obj_ID)
         );
     """)
-    dbconn.commit()
 
-    cursor.execute("""
-        CREATE TABLE celestial_class (
-        class_id INT PRIMARY KEY AUTO_INCREMENT,
-        class_name VARCHAR(50) UNIQUE NOT NULL
-            );
-    """)
     dbconn.commit()
 
     # Insert class names
@@ -96,30 +97,46 @@ try:
 
     # Insert data in batches
     def insert_batch(table_name, insert_query, data, batch_size=1000):
-        for i in tqdm(range(0, len(data), batch_size), desc=f"Inserting into {table_name}"):
-            batch_data = data[i:i + batch_size]
-            cursor.executemany(insert_query, batch_data)
-            dbconn.commit()
+        with tqdm(total=len(data), desc=f"Inserting into {table_name}") as pbar:
+            for i in range(0, len(data), batch_size):
+                batch_data = data[i:i + batch_size]
+                cursor.executemany(insert_query, batch_data)
+                dbconn.commit()
+                pbar.update(len(batch_data))
 
-    # Insert data into celestial_object
-    for _, row in tqdm(df.iterrows(), desc="Inserting data"):
+    # Preparing data for celestial_object
+    celestial_object_data = []
+    for _, row in df.iterrows():
         class_id_query = f"SELECT class_id FROM celestial_class WHERE class_name = '{row['class']}'"
         cursor.execute(class_id_query)
         class_id = cursor.fetchone()[0]
-        cursor.execute("INSERT INTO celestial_object (obj_ID, alpha, delta, class_id) VALUES (%s, %s, %s, %s)",
-                       (row['obj_ID'], row['alpha'], row['delta'], class_id))
+        celestial_object_data.append((row['obj_ID'], row['alpha'], row['delta'], class_id))
 
-    # Batch insert data into Observation
-    observation_data = [(row['obj_ID'], row['u'], row['g'], row['r'], row['i'], row['z'], row['run_ID'], row['rerun_ID'], row['cam_col'], row['field_ID']) for _, row in df.iterrows()]
-    insert_observation_query = """INSERT INTO Observation (obj_ID, u, g, r, i, z, run_ID, rerun_ID, cam_col, field_ID)
-                                  VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"""
-    insert_batch("Observation", insert_observation_query, observation_data)
+    # Batch insert data into celestial_object
+    insert_celestial_object_query = "INSERT INTO celestial_object (obj_ID, alpha, delta, class_id) VALUES (%s, %s, %s, %s)"
+    insert_batch("celestial_object", insert_celestial_object_query, celestial_object_data)
 
-    # Batch insert data into Classification
-    classification_data = [(row['obj_ID'], row['class'], row['redshift'], row['plate'], row['MJD'], row['fiber_ID'], row['spec_obj_ID']) for _, row in df.iterrows()]
-    insert_classification_query = """INSERT INTO Classification (obj_ID, class, redshift, plate, MJD, fiber_ID, spec_obj_ID)
-                                     VALUES (%s, %s, %s, %s, %s, %s, %s);"""
-    insert_batch("Classification", insert_classification_query, classification_data)
+    # Preparing data for celestial_photometric_data
+    photometric_data = [(row['obj_ID'], row['u'], row['g'], row['r'], row['i'], row['z']) for _, row in df.iterrows()]
+
+    # Batch insert data into celestial_photometric_data
+    insert_photometric_query = "INSERT INTO celestial_photometric_data (obj_ID, u, g, r, i, z) VALUES (%s, %s, %s, %s, %s, %s)"
+    insert_batch("celestial_photometric_data", insert_photometric_query, photometric_data)
+
+    # Preparing data for celestial_observation_runs
+    observation_runs_data = [(row['run_ID'], row['rerun_ID'], row['cam_col'], row['field_ID']) for _, row in df.iterrows()]
+
+    # Batch insert data into celestial_observation_runs
+    insert_observation_query = "INSERT INTO celestial_observation_runs (run_ID, rereun_ID, cam_col, field_ID) VALUES (%s, %s, %s, %s)"
+    insert_batch("celestial_observation_runs", insert_observation_query, observation_runs_data)
+
+    # Preparing data for celestial_spectroscopic_data
+    spectroscopic_data = [(row['spec_obj_ID'], row['obj_ID'], row['plate'], row['MJD'], row['fiber_ID']) for _, row in df.iterrows()]
+
+    # Batch insert data into celestial_spectroscopic_data
+    insert_spectroscopic_query = "INSERT INTO celestial_spectroscopic_data (spec_obj_ID, obj_ID, plate, MJD, fiber_ID) VALUES (%s, %s, %s, %s, %s)"
+    insert_batch("celestial_spectroscopic_data", insert_spectroscopic_query, spectroscopic_data)
+
 
 except pymysql.MySQLError as e:
     print("Error in database operation:", e)

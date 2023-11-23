@@ -8,9 +8,7 @@ with open('credentials.txt') as f:
 dbhost = config['csc']['dbhost']
 dbuser = config['csc']['dbuser']
 dbpw = config['csc']['dbpw']
-
-# Choose schema
-dbschema = 'world'
+dbschema = config['csc']['dbschema']
 
 dbconn = None
 try:
@@ -29,15 +27,17 @@ try:
 
     # Set up and execute query
     #query = str(input("Enter your query here: "))
-    query = "SELECT Code, CountryName FROM Country;"
+    query = "alter table Observation RENAME to star_Observation;"
     cursor.execute(query)
 
     # Fetch and process results
     result = cursor.fetchall()
+    '''
     # process result
     for row in result:
         print("Country Code:", row[0], end=' -> ')
         print("Country Name:", row[1])
+        '''
 
 
 except pymysql.MySQLError as e:

@@ -31,64 +31,83 @@ try:
     cursor = dbconn.cursor()
     
     # Drop tables if they exist
-    cursor.execute("DROP TABLE IF EXISTS Classification;")
-    cursor.execute("DROP TABLE IF EXISTS Observation;")
-    cursor.execute("DROP TABLE IF EXISTS CelestialObject;")
+    cursor.execute("DROP TABLE IF EXISTS celestial_object;")
+    cursor.execute("DROP TABLE IF EXISTS celestial_photometric_data;")
+    cursor.execute("DROP TABLE IF EXISTS celestial_observation_runs;")
+    cursor.execute("DROP TABLE IF EXISTS celestial_spectroscopic_data;")
+    cursor.execute("DROP TABLE IF EXISTS celestial_class;")
+
     dbconn.commit()
 
     # Create tables
     cursor.execute("""
-        CREATE TABLE CelestialObject (
+        CREATE TABLE celestial_object (
             obj_ID BIGINT PRIMARY KEY,
             alpha DECIMAL(17, 12),
-            delta DECIMAL(17, 12)
+            delta DECIMAL(17, 12),
+            class_id INT,
+            FOREIGN KEY (class_id) REFERENCES celestial_class(class_id)
         );
     """)
     cursor.execute("""
-        CREATE TABLE Observation (
-            observation_ID INT AUTO_INCREMENT PRIMARY KEY,
+        CREATE TABLE celestial_photometric_data (
             obj_ID BIGINT,
             u DECIMAL(10, 5),
             g DECIMAL(10, 5),
             r DECIMAL(10, 5),
             i DECIMAL(10, 5),
             z DECIMAL(10, 5),
-            run_ID INT,
-            rerun_ID INT,
-            cam_col INT,
-            field_ID INT,
-            FOREIGN KEY (obj_ID) REFERENCES CelestialObject(obj_ID)
+            PRIMARY KEY (obj_ID),
+            FOREIGN KEY (obj_ID) REFERENCES celestial_object(obj_ID)
         );
     """)
     cursor.execute("""
-        CREATE TABLE Classification (
-            classification_ID INT AUTO_INCREMENT PRIMARY KEY,
+        CREATE TABLE celestial_observation_runs (
+            run_ID INT PRIMARY KEY,
+            rereun_ID INT,
+            cam_col INT,
+            field_ID INT
+        );
+    """)
+    
+    cursor.execute("""
+        CREATE TABLE celestial_spectroscopic_data (
+            spec_obj_ID VARCHAR(50) PRIMARY KEY,
             obj_ID BIGINT,
-            class VARCHAR(50),
-            redshift DECIMAL(13, 10),
             plate INT,
             MJD INT,
             fiber_ID INT,
-            spec_obj_ID VARCHAR(50),
-            FOREIGN KEY (obj_ID) REFERENCES CelestialObject(obj_ID)
-            );
-        """)
+            FOREIGN KEY (obj_ID) REFERENCES celestial_object(obj_ID)
+        );
+    """)
     dbconn.commit()
 
+    cursor.execute("""
+        CREATE TABLE celestial_class (
+        class_id INT PRIMARY KEY AUTO_INCREMENT,
+        class_name VARCHAR(50) UNIQUE NOT NULL
+            );
+    """)
+    dbconn.commit()
 
-    # Function to insert data in batches
+    # Insert class names
+    cursor.execute("INSERT INTO celestial_class (class_name) VALUES ('GALAXY'), ('STAR'), ('QSO');")
+    dbconn.commit()
+
+    # Insert data in batches
     def insert_batch(table_name, insert_query, data, batch_size=1000):
         for i in tqdm(range(0, len(data), batch_size), desc=f"Inserting into {table_name}"):
             batch_data = data[i:i + batch_size]
             cursor.executemany(insert_query, batch_data)
             dbconn.commit()
 
-    # Batch insert data into CelestialObject
-    celestial_data = [(row['obj_ID'], row['alpha'], row['delta']) for _, row in df.iterrows()]
-    insert_celestial_query = """INSERT INTO CelestialObject (obj_ID, alpha, delta)
-                                VALUES (%s, %s, %s)
-                                ON DUPLICATE KEY UPDATE alpha = VALUES(alpha), delta = VALUES(delta);"""
-    insert_batch("CelestialObject", insert_celestial_query, celestial_data)
+    # Insert data into celestial_object
+    for _, row in tqdm(df.iterrows(), desc="Inserting data"):
+        class_id_query = f"SELECT class_id FROM celestial_class WHERE class_name = '{row['class']}'"
+        cursor.execute(class_id_query)
+        class_id = cursor.fetchone()[0]
+        cursor.execute("INSERT INTO celestial_object (obj_ID, alpha, delta, class_id) VALUES (%s, %s, %s, %s)",
+                       (row['obj_ID'], row['alpha'], row['delta'], class_id))
 
     # Batch insert data into Observation
     observation_data = [(row['obj_ID'], row['u'], row['g'], row['r'], row['i'], row['z'], row['run_ID'], row['rerun_ID'], row['cam_col'], row['field_ID']) for _, row in df.iterrows()]

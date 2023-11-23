@@ -42,14 +42,14 @@ try:
     # Create tables
     
     cursor.execute("""
-        CREATE TABLE celestial_class (
+        CREATE TABLE IF NOT EXISTS celestial_class (
         class_id INT PRIMARY KEY AUTO_INCREMENT,
         class_name VARCHAR(50) UNIQUE NOT NULL
             );
     """)
     
     cursor.execute("""
-        CREATE TABLE celestial_object (
+        CREATE TABLE IF NOT EXISTS celestial_object (
             obj_ID BIGINT PRIMARY KEY,
             alpha DECIMAL(17, 12),
             delta DECIMAL(17, 12),
@@ -58,7 +58,7 @@ try:
         );
     """)
     cursor.execute("""
-        CREATE TABLE celestial_photometric_data (
+        CREATE TABLE IF NOT EXISTS celestial_photometric_data (
             obj_ID BIGINT,
             u DECIMAL(10, 5),
             g DECIMAL(10, 5),
@@ -70,7 +70,7 @@ try:
         );
     """)
     cursor.execute("""
-        CREATE TABLE celestial_observation_runs (
+        CREATE TABLE IF NOT EXISTS celestial_observation_runs (
             run_ID INT PRIMARY KEY,
             rereun_ID INT,
             cam_col INT,
@@ -79,7 +79,7 @@ try:
     """)
     
     cursor.execute("""
-        CREATE TABLE celestial_spectroscopic_data (
+        CREATE TABLE IF NOT EXISTS celestial_spectroscopic_data (
             spec_obj_ID VARCHAR(50) PRIMARY KEY,
             obj_ID BIGINT,
             plate INT,

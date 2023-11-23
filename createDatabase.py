@@ -62,7 +62,6 @@ try:
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS celestial_photometric_data (
             id INT PRIMARY KEY AUTO_INCREMENT,
-            obj_ID BIGINT,
             u DECIMAL(10, 5),
             g DECIMAL(10, 5),
             r DECIMAL(10, 5),
@@ -71,6 +70,7 @@ try:
             FOREIGN KEY (id) REFERENCES celestial_object(id)
         );
     """)
+    '''
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS celestial_observation_runs (
             run_ID INT PRIMARY KEY,
@@ -79,12 +79,12 @@ try:
             field_ID INT
         );
     """)
+    '''
     
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS celestial_spectroscopic_data (
             id INT PRIMARY KEY AUTO_INCREMENT,
             spec_obj_ID VARCHAR(50),
-            obj_ID BIGINT,
             plate INT,
             MJD INT,
             fiber_ID INT,
@@ -123,25 +123,30 @@ try:
     insert_batch("celestial_object", insert_celestial_query, celestial_data)
 
     # Insert data into celestial_photometric_data
-    photometric_data = [(row['obj_ID'], row['u'], row['g'], row['r'], row['i'], row['z']) for _, row in df.iterrows()]
-    insert_photometric_query = """INSERT INTO celestial_photometric_data (obj_ID, u, g, r, i, z)
-                                  VALUES (%s, %s, %s, %s, %s, %s);"""
+    cursor.execute("SELECT obj_ID, id FROM celestial_object;")
+    obj_id_to_id = {obj_id: id for obj_id, id in cursor.fetchall()}
+
+    photometric_data = [(row['u'], row['g'], row['r'], row['i'], row['z'], obj_id_to_id[row['obj_ID']]) for _, row in df.iterrows()]
+    insert_photometric_query = """INSERT INTO celestial_photometric_data (u, g, r, i, z)
+                                VALUES (%s, %s, %s, %s, %s);"""
     insert_batch("celestial_photometric_data", insert_photometric_query, photometric_data)
-    
+    '''
     # Insert data into celestial_observation_runs
     observation_run_data = [(row['run_ID'], row['rerun_ID'], row['cam_col'], row['field_ID']) for _, row in df.iterrows()]
     insert_observation_run_query = """INSERT INTO celestial_observation_runs (run_ID, rerun_ID, cam_col, field_ID)
                                     VALUES (%s, %s, %s, %s)
                                     ON DUPLICATE KEY UPDATE rerun_ID=VALUES(rerun_ID), cam_col=VALUES(cam_col), field_ID=VALUES(field_ID);"""
     insert_batch("celestial_observation_runs", insert_observation_run_query, observation_run_data)
-    
+    '''
     # Insert data into celestial_spectroscopic_data
-    spectroscopic_data = [(row['spec_obj_ID'], row['obj_ID'], row['plate'], row['MJD'], row['fiber_ID']) for _, row in df.iterrows()]
-    insert_spectroscopic_query = """INSERT INTO celestial_spectroscopic_data (spec_obj_ID, obj_ID, plate, MJD, fiber_ID)
-                                    VALUES (%s, %s, %s, %s, %s);"""
+    cursor.execute("SELECT obj_ID, id FROM celestial_object;")
+    obj_id_to_id = {obj_id: id for obj_id, id in cursor.fetchall()}
+
+    spectroscopic_data = [(row['spec_obj_ID'], row['plate'], row['MJD'], row['fiber_ID'], obj_id_to_id[row['obj_ID']]) for _, row in df.iterrows()]
+    insert_spectroscopic_query = """INSERT INTO celestial_spectroscopic_data (spec_obj_ID, plate, MJD, fiber_ID)
+                                    VALUES (%s, %s, %s, %s);"""
     insert_batch("celestial_spectroscopic_data", insert_spectroscopic_query, spectroscopic_data)
-
-
+    
 except pymysql.MySQLError as e:
     print("Error in database operation:", e)
 

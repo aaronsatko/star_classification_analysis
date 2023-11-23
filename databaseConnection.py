@@ -4,7 +4,7 @@ import configparser
 # Get credentials to connect to database
 
 config = configparser.ConfigParser()
-config.read_file(open('credentials.txt')) # point to the correct place where this file is!
+config.read_file(open('credentials.txt'))
 dbhost = config['csc']['dbhost']
 dbuser = config['csc']['dbuser']
 dbpw = config['csc']['dbpw']
@@ -26,4 +26,4 @@ cursor = dbconn.cursor()
 
 # 2. Set up query as a string
 
-query = str(input("Enter your query here"))
+query = str(input("Enter your query here: "))

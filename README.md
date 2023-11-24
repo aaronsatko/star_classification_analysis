@@ -2,33 +2,88 @@
 
 ## Overview
 
-This project aims to explore and analyze a dataset of celestial objects and their classifications. Utilizing skills developed over the semester, the project focuses on data importing with PyMySQL, extensive data analysis, and effective data presentation. The goal is to derive meaningful insights from the star classification data and present these findings in an accessible and visually appealing format.
+This project aims to explore and analyze a dataset of celestial objects and their classifications. The focus is on data importing with PyMySQL, extensive data analysis, and effective data presentation. The goal is to derive meaningful insights from the star classification data and present these findings in an accessible and visually appealing format.
+
+The data used in this project was sourced from Kaggle: Stellar Classification Dataset - SDSS17
+https://www.kaggle.com/datasets/fedesoriano/stellar-classification-dataset-sdss17
+
+## Dependencies
+
+The project relies on several external Python libraries:
+
+    pandas: For reading and manipulating data in a DataFrame format.
+    configparser: To manage database configurations.
+    PyMySQL: For establishing a connection with the MySQL database and executing SQL statements.
+    tqdm: To provide a progress meter during data insertion.
 
 ## Project Components
 
 ### Database Creation
 
-After conducting extensive testing with various database designs for my star classification project, I have concluded that utilizing a single table, named celestial_observations, is the most effective approach. This decision came from a thorough examination of multi-table structures versus a consolidated single-table schema.
+Utilizing a single table, named celestial_observations, was identified as the most effective approach for the star classification project. This decision was based on a comparison of multi-table structures versus a single-table schema.
 
-A primary advantage of the single-table design is the simplification of the query process. With all relevant data housed in one table, the complexity of constructing and executing queries is significantly reduced. There's no need for elaborate joins or intricate relational mappings that are common with multi-table designs. Since every entry in the database relates to one specific celestial observation, a multi table database would have every table be one-to-one mapped which serves no real purpose in my use case.
+Key advantages:
 
-Each row in the celestial_observations table represents a distinct observation. This one-to-one correspondence between rows and observations ensures clarity and directness in the relationship of data points, which enhances both the readability and interpretability of the data. It also assists in maintaining a clean and organized dataset where each piece of information is easily accessible.
+    Simplified query process without the need for complex joins or relational mappings.
+    Direct correspondence between each row and a celestial observation, enhancing data clarity and organization.
+    Removal of non-essential columns to focus on relevant data, reducing storage requirements and improving data operation performance.
 
-In addition to structural efficiency, I made a strategic choice to streamline the dataset further by removing columns that were not pertinent to my analysis. This step of pruning unnecessary data fields helps in focusing on relevant data, reducing storage requirements, and improving the performance of data operations.
-
-The single-table design, complemented by a carefully curated dataset, aligns perfectly with the nature of the star classification data. Typically, queries in this domain require a holistic view, where each attribute of an observation is crucial. Therefore, this approach not only simplifies database management but also ensures that the database system is optimized for effective data retrieval and analysis in the star classification project.
+The single-table design is well-suited for queries requiring a holistic view of each celestial observation.
 
 ### Data Importing
 
-    Tool Used: PyMySQL
-    Description: Data will be imported into a MySQL database using PyMySQL. This process includes establishing a connection to the database, creating tables, and efficiently loading the dataset.
+The data was imported into a MySQL database using Python. The process included:
+
+    Reading 'star_classification.csv' into a pandas DataFrame.
+    Selecting essential columns: 'obj_ID', 'alpha', 'delta', 'u', 'g', 'r', 'i', 'z', 'spec_obj_ID', 'class', 'redshift', 'plate', and 'MJD'.
+    Employing a batch insertion method with PyMySQL's executemany method.
+    Using tqdm for progress visualization during the data insertion.
 
 ### Data Analysis
 
     Tools Used: Python (Pandas, NumPy, etc.)
-    Description: Data analysis will be performed using Python libraries. This phase involves data cleaning, manipulation, and exploration to uncover patterns and insights in the celestial data.
+    Description: Data analysis will be performed using Python libraries for data cleaning, manipulation, and exploration to uncover patterns and insights in the celestial data.
+
+## Interesting Queries
+
+### Computes the average values for the ultraviolet, green, red, near-infrared, and infrared filters for each class of celestial object.
+
+SELECT class, AVG(u) AS avg_ultraviolet, AVG(g) AS avg_green, AVG(r) AS avg_red, AVG(i) AS avg_near_infrared, AVG(z) AS avg_infrared
+FROM celestial_observations
+GROUP BY class;
 
 
+### Identify the celestial objects with the highest redshift values to find the farthest or oldest objects.
 
-https://www.kaggle.com/datasets/fedesoriano/stellar-classification-dataset-sdss17
+SELECT *
+FROM celestial_observations
+ORDER BY redshift DESC
+LIMIT 10;
 
+
+### Analyze the distribution of observations across different plates.
+
+SELECT plate, COUNT(*) AS observation_count
+FROM celestial_observations
+GROUP BY plate;
+
+
+### Compare the average redshift values between galaxies, stars, and quasars.
+
+SELECT class, AVG(redshift) AS average_redshift
+FROM celestial_observations
+GROUP BY class;
+
+
+### Count how many of each class of object (galaxy, star, quasar) are in the dataset.
+
+SELECT class, COUNT(*) AS frequency
+FROM celestial_observations
+GROUP BY class;
+
+
+### Explore any apparent correlation between redshift and the measurements in different filters.
+
+SELECT redshift, AVG(u) AS avg_u, AVG(g) AS avg_g, AVG(r) AS avg_r, AVG(i) AS avg_i, AVG(z) AS avg_z
+FROM celestial_observations
+GROUP BY redshift;

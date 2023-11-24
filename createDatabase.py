@@ -6,6 +6,8 @@ from tqdm import tqdm
 # Read CSV file
 CSVfile = 'star_classification.csv'
 df = pd.read_csv(CSVfile)
+columns_to_keep = ['obj_ID', 'alpha', 'delta', 'u', 'g', 'r', 'i', 'z', 'spec_obj_ID', 'class', 'redshift', 'plate', 'MJD']
+df = df[columns_to_keep]
 
 # Read db configuration
 config = configparser.ConfigParser()
@@ -47,16 +49,11 @@ try:
             r DOUBLE,
             i DOUBLE,
             z DOUBLE,
-            run_ID INT,
-            rerun_ID INT,
-            cam_col INT,
-            field_ID INT,
             spec_obj_ID BIGINT UNSIGNED,
             class VARCHAR(10),
             redshift DOUBLE,
             plate INT,
-            MJD INT,
-            fiber_ID INT
+            MJD INT
         );
     """)
     
@@ -79,8 +76,8 @@ try:
 
     # Define the insert query
     insert_query = """
-    INSERT INTO celestial_observations (obj_ID, alpha, delta, u, g, r, i, z, run_ID, rerun_ID, cam_col, field_ID, spec_obj_ID, class, redshift, plate, MJD, fiber_ID)
-    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
+    INSERT INTO celestial_observations (obj_ID, alpha, delta, u, g, r, i, z, spec_obj_ID, class, redshift, plate, MJD)
+    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
     """
 
     insert_batch('celestial_observations', insert_query, data_tuples)

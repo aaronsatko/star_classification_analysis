@@ -46,44 +46,76 @@ The data was imported into a MySQL database using Python. The process included:
 
 ## Interesting Queries
 
-### Computes the average values for the ultraviolet, green, red, near-infrared, and infrared filters for each class of celestial object.
+### Computes the average values for the ultraviolet, green, red, near-infrared, and infrared filters for each class of celestial object. It also includes the standard deviation for each filter to better understand the variability in measurements for each class.
 
-SELECT class, AVG(u) AS avg_ultraviolet, AVG(g) AS avg_green, AVG(r) AS avg_red, AVG(i) AS avg_near_infrared, AVG(z) AS avg_infrared
-FROM celestial_observations
-GROUP BY class;
+SELECT
+  class,
+  AVG(u) AS avg_ultraviolet,
+  STDDEV(u) AS stddev_ultraviolet,
+  AVG(g) AS avg_green,
+  STDDEV(g) AS stddev_green,
+  AVG(r) AS avg_red,
+  STDDEV(r) AS stddev_red,
+  AVG(i) AS avg_near_infrared,
+  STDDEV(i) AS stddev_near_infrared,
+  AVG(z) AS avg_infrared,
+  STDDEV(z) AS stddev_infrared
+FROM
+  celestial_observations
+GROUP BY
+  class;
 
 
 ### Identify the celestial objects with the highest redshift values to find the farthest or oldest objects.
 
-SELECT *
-FROM celestial_observations
-ORDER BY redshift DESC
+SELECT
+  *,
+  plate,
+FROM
+  celestial_observations
+ORDER BY
+  redshift DESC
 LIMIT 10;
 
 
-### Analyze the distribution of observations across different plates.
+### Analyze the distribution of observations across different plates along with the average redshift observed in each plate.
 
-SELECT plate, COUNT(*) AS observation_count
-FROM celestial_observations
-GROUP BY plate;
+SELECT
+  plate,
+  COUNT(*) AS observation_count,
+  AVG(redshift) AS avg_redshift
+FROM
+  celestial_observations
+GROUP BY
+  plate
+ORDER BY
+  observation_count DESC;
+
+### Compare the average redshift values between galaxies, stars, and quasars. It also includes min and max values for each.
+
+SELECT
+  class,
+  AVG(redshift) AS average_redshift,
+  MIN(redshift) AS min_redshift,
+  MAX(redshift) AS max_redshift
+FROM
+  celestial_observations
+GROUP BY
+  class;
+
+### Count how many of each class of object (galaxy, star, quasar) are in the dataset and include average values for photometric filters.
+
+SELECT
+  class,
+  COUNT(*) AS frequency,
+  AVG(u) AS avg_u,
+  AVG(g) AS avg_g,
+  AVG(r) AS avg_r,
+  AVG(i) AS avg_i,
+  AVG(z) AS avg_z
+FROM
+  celestial_observations
+GROUP BY
+  class;
 
 
-### Compare the average redshift values between galaxies, stars, and quasars.
-
-SELECT class, AVG(redshift) AS average_redshift
-FROM celestial_observations
-GROUP BY class;
-
-
-### Count how many of each class of object (galaxy, star, quasar) are in the dataset.
-
-SELECT class, COUNT(*) AS frequency
-FROM celestial_observations
-GROUP BY class;
-
-
-### Explore any apparent correlation between redshift and the measurements in different filters.
-
-SELECT redshift, AVG(u) AS avg_u, AVG(g) AS avg_g, AVG(r) AS avg_r, AVG(i) AS avg_i, AVG(z) AS avg_z
-FROM celestial_observations
-GROUP BY redshift;

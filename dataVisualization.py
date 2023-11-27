@@ -1,11 +1,11 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+import numpy as np
 
 sns.set()
 
 df = pd.read_csv('star_classification.csv')
-
 
 # Distribution of Redshift
 plt.figure(figsize=(10, 6))
@@ -27,7 +27,8 @@ plt.title('Redshift Distribution by Class')
 plt.savefig('plots/redshift_class_dist.png')
 
 # Correlation Heatmap
+numeric_df = df.select_dtypes(include=[np.number])
 plt.figure(figsize=(10, 8))
-sns.heatmap(df.corr(), annot=True, fmt=".2f")
+sns.heatmap(numeric_df.corr(), annot=True, fmt=".2f")
 plt.title('Correlation Heatmap')
 plt.savefig('plots/correlation_heatmap.png')

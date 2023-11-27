@@ -1,3 +1,4 @@
 credentials.txt
 .vscode/
 lib/
+database_errors.log

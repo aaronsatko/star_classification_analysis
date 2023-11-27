@@ -2,52 +2,64 @@
 
 ## Overview
 
-This project aims to explore and analyze a dataset of celestial objects and their classifications. The focus is on data importing with PyMySQL, extensive data analysis, and effective data presentation. The goal is to derive meaningful insights from the star classification data and present these findings in an accessible and visually appealing format.
+The Star Classification Data Analysis Project is an exploratory and analytical initiative focused on a dataset of celestial objects and their classifications. The primary objectives include:
 
-The data used in this project was sourced from Kaggle: Stellar Classification Dataset - SDSS17
-https://www.kaggle.com/datasets/fedesoriano/stellar-classification-dataset-sdss17
+- Importing data using PyMySQL.
+- Conducting extensive data analysis.
+- Presenting findings in a visually appealing and accessible format.
+
+The dataset originates from the Stellar Classification Dataset - SDSS17, available on Kaggle. For more details, visit the dataset page: [Stellar Classification Dataset - SDSS17 on Kaggle](https://www.kaggle.com/datasets/fedesoriano/stellar-classification-dataset-sdss17).
 
 ## Dependencies
 
-The project relies on several external Python libraries:
+This project leverages various Python libraries:
 
-    pandas: For reading and manipulating data in a DataFrame format.
-    configparser: To manage database configurations.
-    PyMySQL: For establishing a connection with the MySQL database and executing SQL statements.
-    tqdm: To provide a progress meter during data insertion.
+- `pandas`: Facilitates reading, manipulating, and analyzing data in DataFrame format.
+- `configparser`: Manages and retrieves database configurations.
+- `PyMySQL`: Connects to the MySQL database and executes SQL statements.
+- `tqdm`: Offers a progress meter for data insertion, enhancing visibility of the process.
 
 ## Project Components
 
 ### Database Creation
 
-Utilizing a single table, named celestial_observations, was identified as the most effective approach for the star classification project. This decision was based on a comparison of multi-table structures versus a single-table schema.
+The database schema was designed with the following principles:
 
-Key advantages:
-
-    Simplified query process without the need for complex joins or relational mappings.
-    Direct correspondence between each row and a celestial observation, enhancing data clarity and organization.
-    Removal of non-essential columns to focus on relevant data, reducing storage requirements and improving data operation performance.
-
-The single-table design is well-suited for queries requiring a holistic view of each celestial observation.
+- **Single Table Structure**: Named `celestial_observations`, this approach streamlines querying by removing the need for complex joins.
+- **Efficiency and Clarity**: Focuses on relevant data by excluding non-essential columns, thus optimizing performance and storage.
+- **Direct Mapping**: Each row in the table directly represents a celestial observation, making the dataset easy to navigate and analyze.
 
 ### Data Importing
 
-The data was imported into a MySQL database using Python. The process included:
+Key steps in the data importing process:
 
-    Reading 'star_classification.csv' into a pandas DataFrame.
-    Selecting essential columns: 'obj_ID', 'alpha', 'delta', 'u', 'g', 'r', 'i', 'z', 'spec_obj_ID', 'class', 'redshift', 'plate', and 'MJD'.
-    Employing a batch insertion method with PyMySQL's executemany method.
-    Using tqdm for progress visualization during the data insertion.
+- **Data Read**: Loading 'star_classification.csv' into a pandas DataFrame.
+- **Column Selection**: Filtering essential attributes such as 'obj_ID', 'alpha', 'delta', 'u', 'g', 'r', 'i', 'z', 'spec_obj_ID', 'class', 'redshift', 'plate', and 'MJD'.
+- **Batch Insertion**: Utilizing PyMySQL's `executemany` method for efficient data insertion.
+- **Progress Monitoring**: Employing tqdm for real-time progress visualization during data insertion.
 
 ### Data Analysis
 
-    Tools Used: Python (Pandas, NumPy, etc.)
-    Description: Data analysis will be performed using Python libraries for data cleaning, manipulation, and exploration to uncover patterns and insights in the celestial data.
+- **Tools**: Utilizes Python and its libraries (Pandas, NumPy, etc.) for sophisticated data manipulation and analysis.
+- **Objective**: The analysis aims to delve deep into the celestial data, uncovering patterns and deriving meaningful insights. Key areas include classification trends, observational data patterns, and statistical correlations.
 
-## Interesting Queries
+The subsequent sections will detail specific queries and analytical findings, shedding light on the complexities and intricacies of celestial object classifications. 
 
-### Computes the average values for the ultraviolet, green, red, near-infrared, and infrared filters for each class of celestial object. It also includes the standard deviation for each filter to better understand the variability in measurements for each class.
+---
 
+
+
+```markdown
+# Celestial Observations Analysis
+
+This document outlines various SQL queries used for analyzing celestial observation data. Each query is designed to extract specific insights from the dataset, and there's a dedicated section for analysis based on the query results.
+
+## Query 1: Average and Standard Deviation of Photometric Filters by Class
+
+**Purpose**: Computes the average and standard deviation for ultraviolet, green, red, near-infrared, and infrared filters for each class of celestial object. This helps understand the variability in measurements for each class.
+
+**SQL Query**:
+```sql
 SELECT
   class,
   AVG(u) AS avg_ultraviolet,
@@ -64,22 +76,36 @@ FROM
   celestial_observations
 GROUP BY
   class;
+```
 
+**Analysis**: 
+_Write your analysis here._
 
-### Identify the celestial objects with the highest redshift values to find the farthest or oldest objects.
+## Query 2: Celestial Objects with the Highest Redshift
 
+**Purpose**: Identifies the celestial objects with the highest redshift values to find the farthest or oldest objects.
+
+**SQL Query**:
+```sql
 SELECT
   *,
-  plate,
+  plate
 FROM
   celestial_observations
 ORDER BY
   redshift DESC
 LIMIT 10;
+```
 
+**Analysis**: 
+_Write your analysis here._
 
-### Analyze the distribution of observations across different plates along with the average redshift observed in each plate.
+## Query 3: Distribution of Observations Across Different Plates
 
+**Purpose**: Analyzes the distribution of observations across different plates along with the average redshift observed in each plate.
+
+**SQL Query**:
+```sql
 SELECT
   plate,
   COUNT(*) AS observation_count,
@@ -90,9 +116,17 @@ GROUP BY
   plate
 ORDER BY
   observation_count DESC;
+```
 
-### Compare the average redshift values between galaxies, stars, and quasars. It also includes min and max values for each.
+**Analysis**: 
+_Write your analysis here._
 
+## Query 4: Average Redshift Values Comparison
+
+**Purpose**: Compares the average redshift values between galaxies, stars, and quasars, including the minimum and maximum values for each.
+
+**SQL Query**:
+```sql
 SELECT
   class,
   AVG(redshift) AS average_redshift,
@@ -102,9 +136,17 @@ FROM
   celestial_observations
 GROUP BY
   class;
+```
 
-### Count how many of each class of object (galaxy, star, quasar) are in the dataset and include average values for photometric filters.
+**Analysis**: 
+_Write your analysis here._
 
+## Query 5: Class Frequency and Average Values for Photometric Filters
+
+**Purpose**: Counts how many of each class of object (galaxy, star, quasar) are in the dataset and includes average values for photometric filters.
+
+**SQL Query**:
+```sql
 SELECT
   class,
   COUNT(*) AS frequency,
@@ -117,5 +159,10 @@ FROM
   celestial_observations
 GROUP BY
   class;
+```
 
+**Analysis**: 
+_Write your analysis here._
+```
 
+This structured format makes it easy to navigate through different queries and their respective analyses. It helps maintain clarity and provides a systematic way to document your findings from the dataset.

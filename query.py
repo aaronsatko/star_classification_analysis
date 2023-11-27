@@ -29,11 +29,12 @@ def plot_avg_stddev_by_class(result):
     averages = { 'U': [row[1] for row in result], 'G': [row[3] for row in result], 'R': [row[5] for row in result], 'I': [row[7] for row in result], 'Z': [row[9] for row in result] }
     stddevs = { 'U': [row[2] for row in result], 'G': [row[4] for row in result], 'R': [row[6] for row in result], 'I': [row[8] for row in result], 'Z': [row[10] for row in result] }
     
-    # Creating the plot
+    filter_colors = {'U': 'blue', 'G': 'green', 'R': 'red', 'I': 'darkred', 'Z': '#800020'}
+
     plt.figure(figsize=(12, 6))
     for i, (filter_name, avg_values) in enumerate(averages.items()):
         x_positions = [x + i*0.1 for x in range(len(classes))]  # Offset x positions for each filter
-        plt.bar(x_positions, avg_values, width=0.1, yerr=stddevs[filter_name], label=f'{filter_name} Filter')
+        plt.bar(x_positions, avg_values, width=0.1, yerr=stddevs[filter_name], label=f'{filter_name} Filter', color=filter_colors[filter_name])
     
     plt.xticks(range(len(classes)), classes)
     plt.xlabel('Class')

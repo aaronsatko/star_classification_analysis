@@ -164,5 +164,3 @@ GROUP BY
 **Analysis**: 
 _Write your analysis here._
 ```
-
-This structured format makes it easy to navigate through different queries and their respective analyses. It helps maintain clarity and provides a systematic way to document your findings from the dataset.

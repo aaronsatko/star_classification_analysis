@@ -12,7 +12,7 @@ The dataset originates from the Stellar Classification Dataset - SDSS17, availab
 
 ## Dependencies
 
-This project leverages various Python libraries:
+This project uses the following Python libraries:
 
 - `pandas`: Facilitates reading, manipulating, and analyzing data in DataFrame format.
 - `configparser`: Manages and retrieves database configurations.
@@ -138,8 +138,14 @@ GROUP BY
   class;
 ```
 
+![Alt text](avg_redshift_comparison.png)
+
 **Analysis**: 
-_Write your analysis here._
+    Stars: Stars have an average redshift of 0, indicating that they are neither receding nor approaching us at significant velocities on a cosmic scale. This is consistent with the fact that stars are typically part of our own galaxy or local group, where the expansion of the universe has a negligible effect on their observed redshift.
+
+    Galaxies: They exhibit a greater redshift than stars, with an average value just above 0.25. This suggests that galaxies are moving away from us, which is expected due to the expansion of the universe. The galaxies shown here are likely at a considerable distance from our own galaxy but not as distant as quasars.
+
+    Quasars (QSO): They have a much higher average redshift compared to galaxies and stars, which aligns with the fact that quasars are among the most distant objects observed in the universe. Their high redshift values indicate that they are moving away from us at a much faster rate, which is also a reflection of their vast distance and age.
 
 ## Query 5: Class Frequency and Average Values for Photometric Filters
 

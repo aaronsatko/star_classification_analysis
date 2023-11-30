@@ -78,6 +78,9 @@ GROUP BY
   class;
 ```
 
+![Alt text](query_generated_plots/avg_stddev_by_class.png)
+
+
 **Analysis**: 
 _Write your analysis here._
 
@@ -96,6 +99,8 @@ ORDER BY
   redshift DESC
 LIMIT 10;
 ```
+
+![Alt text](query_generated_plots/highest_redshift.png)
 
 **Analysis**: 
 _Write your analysis here._
@@ -117,6 +122,8 @@ GROUP BY
 ORDER BY
   observation_count DESC;
 ```
+
+![Alt text](query_generated_plots/distribution_across_plates.png)
 
 **Analysis**: 
 _Write your analysis here._
@@ -166,6 +173,8 @@ FROM
 GROUP BY
   class;
 ```
+
+![Alt text](query_generated_plots/class_frequency.png)
 
 **Analysis**: 
 _Write your analysis here._

@@ -57,14 +57,7 @@ try:
         );
     """)
     
-
     dbconn.commit()
-
-    # Insert class names
-    '''
-    cursor.execute("INSERT INTO celestial_class (class_name) VALUES ('GALAXY'), ('STAR'), ('QSO');")
-    dbconn.commit()
-    '''
     
     def insert_batch(table_name, insert_query, data, batch_size=1000):
         for i in tqdm(range(0, len(data), batch_size), desc=f"Inserting into {table_name}"):

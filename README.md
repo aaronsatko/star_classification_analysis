@@ -17,7 +17,7 @@ This project uses the following Python libraries:
 - `pandas`: Facilitates reading, manipulating, and analyzing data in DataFrame format.
 - `configparser`: Manages and retrieves database configurations.
 - `PyMySQL`: Connects to the MySQL database and executes SQL statements.
-- `tqdm`: Offers a progress meter for data insertion, enhancing visibility of the process.
+- `tqdm`: Offers a progress meter for data insertion.
 
 ## Project Components
 
@@ -72,10 +72,8 @@ SELECT
   STDDEV(i) AS stddev_near_infrared,
   AVG(z) AS avg_infrared,
   STDDEV(z) AS stddev_infrared
-FROM
-  celestial_observations
-GROUP BY
-  class;
+FROM celestial_observations
+GROUP BY class;
 ```
 
 ![Alt text](query_generated_plots/avg_stddev_by_class.png)
@@ -90,13 +88,9 @@ _Write your analysis here._
 
 **SQL Query**:
 ```sql
-SELECT
-  *,
-  plate
-FROM
-  celestial_observations
-ORDER BY
-  redshift DESC
+SELECT *, plate
+FROM celestial_observations
+ORDER BY redshift DESC
 LIMIT 10;
 ```
 
@@ -111,16 +105,16 @@ _Write your analysis here._
 
 **SQL Query**:
 ```sql
-SELECT
-  plate,
-  COUNT(*) AS observation_count,
-  AVG(redshift) AS avg_redshift
-FROM
-  celestial_observations
-GROUP BY
-  plate
-ORDER BY
-  observation_count DESC;
+(SELECT plate, COUNT(*) AS observation_count, 'Top 10' AS category
+ FROM celestial_observations 
+ GROUP BY plate 
+ ORDER BY observation_count DESC LIMIT 10)
+UNION ALL
+(Select plate, COUNT(*) AS observation_count, 'Bottom 10' AS category
+ FROM celestial_observations
+ GROUP BY plate
+ ORDER BY observation_count ASC
+ LIMIT 10);
 ```
 
 ![Alt text](query_generated_plots/distribution_across_plates.png)
@@ -134,15 +128,10 @@ _Write your analysis here._
 
 **SQL Query**:
 ```sql
-SELECT
-  class,
-  AVG(redshift) AS average_redshift,
-  MIN(redshift) AS min_redshift,
-  MAX(redshift) AS max_redshift
-FROM
-  celestial_observations
-GROUP BY
-  class;
+SELECT class, AVG(redshift) AS average_redshift, MIN(redshift) AS min_redshift, 
+       MAX(redshift) AS max_redshift 
+FROM celestial_observations 
+GROUP BY class;
 ```
 
 ![Alt text](query_generated_plots/avg_redshift_comparison.png)
@@ -153,10 +142,11 @@ GROUP BY
     Galaxies: They exhibit a greater redshift than stars, with an average value just above 0.25. This suggests that galaxies are moving away from us, which is expected due to the expansion of the universe. The galaxies shown here are likely at a considerable distance from our own galaxy but not as distant as quasars.
 
     Quasars (QSO): They have a much higher average redshift compared to galaxies and stars, which aligns with the fact that quasars are among the most distant objects observed in the universe. Their high redshift values indicate that they are moving away from us at a much faster rate, which is also a reflection of their vast distance and age.
+```
 
 ## Query 5: Class Frequency and Average Values for Photometric Filters
 
-**Purpose**: Counts how many of each class of object (galaxy, star, quasar) are in the dataset and includes average values for photometric filters.
+**Purpose**: This query aims to count the number of celestial objects in each class (galaxy, star, quasar) within the dataset and calculate the average values for different photometric filters. This provides insight into the distribution and photometric characteristics of different celestial object classes.
 
 **SQL Query**:
 ```sql
@@ -177,5 +167,6 @@ GROUP BY
 ![Alt text](query_generated_plots/class_frequency.png)
 
 **Analysis**: 
-_Write your analysis here._
+This query along with the generated plot shows that galaxies are the most populous celestial body in the dataset and observable universe. Quasars are the next most frequent class
+
 ```

@@ -4,6 +4,7 @@ import logging
 import matplotlib.pyplot as plt
 import seaborn as sns
 import os
+import pandas as pd
 
 # Set up logging
 logging.basicConfig(filename='database_errors.log', level=logging.ERROR, 
@@ -69,18 +70,31 @@ def plot_distribution_across_plates(result):
     plates = [row[0] for row in result]
     observation_counts = [row[1] for row in result]
 
+    # Sort the result based on observation counts to ensure top 10 are first
+    sorted_results = sorted(zip(plates, observation_counts), key=lambda x: x[1], reverse=True)
+    plates, observation_counts = zip(*sorted_results)
+
+    # Split into top 10 and bottom 10 based on sorted observation counts
+    top_10_plates = plates[:10]
+    bottom_10_plates = plates[-10:]
+
+    df = pd.DataFrame({'Plate': plates, 'Observation Count': observation_counts})
+
+    # Define colors for each bar
+    colors = ['green' if plate in top_10_plates else 'red' for plate in df['Plate']]
+
     plt.figure(figsize=(10, 6))
-    sns.barplot(x=plates, y=observation_counts, order=plates)
+    sns.barplot(x='Plate', y='Observation Count', data=df, palette=colors, order=df['Plate'])
     plt.xticks(rotation=45)
     plt.xlabel('Plate')
     plt.ylabel('Number of Observations')
-    plt.title('Distribution of Observations Across Plates')
+    plt.title('Top 10 and Bottom 10 Plates by Observation Count')
+    plt.legend([],[], frameon=False)  # Hide the legend
     plt.tight_layout()
 
     plot_filename = os.path.join(plots_dir, 'plates_distribution.png')
     plt.savefig(plot_filename)
     plt.show()
-
 
 # Query 4
 def plot_avg_redshift_comparison(result):
@@ -121,19 +135,35 @@ predefined_queries = {
            AVG(g) AS avg_green, STDDEV(g) AS stddev_green, AVG(r) AS avg_red, 
            STDDEV(r) AS stddev_red, AVG(i) AS avg_near_infrared, 
            STDDEV(i) AS stddev_near_infrared, AVG(z) AS avg_infrared, 
-           STDDEV(z) AS stddev_infrared FROM celestial_observations GROUP BY class"""),
+           STDDEV(z) AS stddev_infrared 
+           FROM celestial_observations GROUP BY class"""),
     2: ("Celestial Objects with Highest Redshift",
-        """SELECT *, plate FROM celestial_observations ORDER BY redshift DESC LIMIT 10"""),
+        """SELECT *, plate 
+            FROM celestial_observations 
+            ORDER BY redshift 
+            DESC LIMIT 10"""),
     3: ("Distribution of Observations Across Different Plates",
-        """SELECT plate, COUNT(*) AS observation_count, AVG(redshift) AS avg_redshift 
-           FROM celestial_observations GROUP BY plate ORDER BY observation_count DESC LIMIT 100"""),
+        """(SELECT plate, COUNT(*) AS observation_count, 'Top 10' AS category
+           FROM celestial_observations 
+           GROUP BY plate 
+           ORDER BY observation_count 
+           DESC LIMIT 10)
+           UNION ALL
+           (Select plate, COUNT(*) AS observation_count, 'Bottom 10' AS category
+           FROM celestial_observations
+           GROUP BY plate
+           ORDER BY observation_count ASC
+           LIMIT 10)"""),
     4: ("Average Redshift Values Comparison",
         """SELECT class, AVG(redshift) AS average_redshift, MIN(redshift) AS min_redshift, 
-           MAX(redshift) AS max_redshift FROM celestial_observations GROUP BY class"""),
+           MAX(redshift) AS max_redshift 
+           FROM celestial_observations 
+           GROUP BY class"""),
     5: ("Count and Average Values for Each Class",
         """SELECT class, COUNT(*) AS frequency, AVG(u) AS avg_u, AVG(g) AS avg_g, 
            AVG(r) AS avg_r, AVG(i) AS avg_i, AVG(z) AS avg_z 
-           FROM celestial_observations GROUP BY class""")
+           FROM celestial_observations 
+           GROUP BY class""")
 }
 
 def select_query():

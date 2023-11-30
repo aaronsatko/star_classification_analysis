@@ -138,7 +138,7 @@ GROUP BY
   class;
 ```
 
-![Alt text](avg_redshift_comparison.png)
+![Alt text](query_generated_plots/avg_redshift_comparison.png)
 
 **Analysis**: 
     Stars: Stars have an average redshift of 0, indicating that they are neither receding nor approaching us at significant velocities on a cosmic scale. This is consistent with the fact that stars are typically part of our own galaxy or local group, where the expansion of the universe has a negligible effect on their observed redshift.

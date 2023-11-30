@@ -51,14 +51,14 @@ def plot_avg_stddev_by_class(result):
 # Query 2
 def plot_highest_redshift(result):
     object_ids = [row[0] for row in result]
-    redshifts = [row[-2] for row in result]
+    redshifts = [row[1] for row in result]
 
     plt.figure(figsize=(10, 6))
-    sns.barplot(x=object_ids, y=redshifts)
+    sns.barplot(x=object_ids, y=redshifts, color='red')
     plt.xticks(rotation=45)
     plt.xlabel('Object ID')
     plt.ylabel('Redshift')
-    plt.title('Top 10 Celestial Objects with Highest Redshift')
+    plt.title('Top 10 Plates with Highest Redshift')
     plt.tight_layout()
 
     plot_filename = os.path.join(plots_dir, 'highest_redshift.png')
@@ -102,7 +102,7 @@ def plot_avg_redshift_comparison(result):
     avg_redshifts = [row[1] for row in result]
 
     plt.figure(figsize=(10, 6))
-    sns.barplot(x=classes, y=avg_redshifts)
+    sns.barplot(x=classes, y=avg_redshifts, color='red')
     plt.xlabel('Class')
     plt.ylabel('Average Redshift')
     plt.title('Average Redshift Values Comparison')
@@ -137,8 +137,8 @@ predefined_queries = {
            STDDEV(i) AS stddev_near_infrared, AVG(z) AS avg_infrared, 
            STDDEV(z) AS stddev_infrared 
            FROM celestial_observations GROUP BY class"""),
-    2: ("Celestial Objects with Highest Redshift",
-        """SELECT *, plate 
+    2: ("Plates with Highest Redshift",
+        """SELECT plate, redshift
             FROM celestial_observations 
             ORDER BY redshift 
             DESC LIMIT 10"""),
@@ -154,7 +154,7 @@ predefined_queries = {
            GROUP BY plate
            ORDER BY observation_count ASC
            LIMIT 10)"""),
-    4: ("Average Redshift Values Comparison",
+    4: ("Redshift Values Comparison",
         """SELECT class, AVG(redshift) AS average_redshift, MIN(redshift) AS min_redshift, 
            MAX(redshift) AS max_redshift 
            FROM celestial_observations 

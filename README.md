@@ -75,7 +75,7 @@ SELECT
 FROM celestial_observations
 GROUP BY class;
 ```
-
+![Alt text](output_screenshots/query1.png)
 ![Alt text](query_generated_plots/avg_stddev_by_class.png)
 
 
@@ -88,12 +88,12 @@ _Write your analysis here._
 
 **SQL Query**:
 ```sql
-SELECT *, plate
+SELECT plate, redshift
 FROM celestial_observations
 ORDER BY redshift DESC
 LIMIT 10;
 ```
-
+![Alt text](output_screenshots/query2.png)
 ![Alt text](query_generated_plots/highest_redshift.png)
 
 **Analysis**: 
@@ -116,7 +116,7 @@ UNION ALL
  ORDER BY observation_count ASC
  LIMIT 10);
 ```
-
+![Alt text](output_screenshots/query3.png)
 ![Alt text](query_generated_plots/distribution_across_plates.png)
 
 **Analysis**: 
@@ -133,17 +133,18 @@ SELECT class, AVG(redshift) AS average_redshift, MIN(redshift) AS min_redshift,
 FROM celestial_observations 
 GROUP BY class;
 ```
-
+![Alt text](output_screenshots/query4.png)
 ![Alt text](query_generated_plots/avg_redshift_comparison.png)
 
 **Analysis**: 
     Stars: Stars have an average redshift of 0, indicating that they are neither receding nor approaching us at significant velocities on a cosmic scale. This is consistent with the fact that stars are typically part of our own galaxy or local group, where the expansion of the universe has a negligible effect on their observed redshift.
 
-    Galaxies: They exhibit a greater redshift than stars, with an average value just above 0.25. This suggests that galaxies are moving away from us, which is expected due to the expansion of the universe. The galaxies shown here are likely at a considerable distance from our own galaxy but not as distant as quasars.
+    Galaxies: Galaxies exhibit a greater redshift than stars, with an average value just above 0.25. This suggests that galaxies are moving away from us, which is expected due to the expansion of the universe. The galaxies shown here are likely at a considerable distance from our own galaxy but not as distant as quasars.
 
     Quasars (QSO): They have a much higher average redshift compared to galaxies and stars, which aligns with the fact that quasars are among the most distant objects observed in the universe. Their high redshift values indicate that they are moving away from us at a much faster rate, which is also a reflection of their vast distance and age.
 ```
 
+```
 ## Query 5: Class Frequency and Average Values for Photometric Filters
 
 **Purpose**: This query aims to count the number of celestial objects in each class (galaxy, star, quasar) within the dataset and calculate the average values for different photometric filters. This provides insight into the distribution and photometric characteristics of different celestial object classes.
@@ -163,7 +164,7 @@ FROM
 GROUP BY
   class;
 ```
-
+![Alt text](output_screenshots/query5.png)
 ![Alt text](query_generated_plots/class_frequency.png)
 
 **Analysis**: 

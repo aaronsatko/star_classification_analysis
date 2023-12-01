@@ -1,30 +1,46 @@
 # Star Classification Data Analysis Project
 
-## Overview
+## Project Components
 
-## What I Did
+### 1. Data Importing: 
+Firstly, utilizing PyMySQL along with other relevant packages listed in the dependencies section, the stellar classification data was entered into a database. This involves the following steps:
 
-1. **Data Importing**: Firstly, utilizing PyMySQL along with other relevant packages listed below, the stellar classification data was entered into a database. This step involves reading the dataset from a CSV file, selecting key columns for analysis, and efficiently inserting the data into a MySQL database server.
+  - **Data Read**: Loading 'star_classification.csv' into a pandas DataFrame.
+  - **Column Selection**: Filtering essential attributes such as 'obj_ID', 'alpha', 'delta', 'u',   'g', 'r', 'i', 'z', 'spec_obj_ID', 'class', 'redshift', 'plate', and 'MJD'.
+  - **Batch Insertion**: Utilizing PyMySQL's `executemany` method for efficient data insertion.
+  - **Progress Monitoring**: Employing tqdm for real-time progress visualization during data    insertion.
 
-2. **Database Design**: After several attempts and database design ideas, I finally decided on a single-table database named `celestial_observations` for the following reasons. While simple, this design focuses on efficiency and clarity and since all columns directly relate to each observation there is no need to split them up. This schema also streamlines the querying process and made the data easy to navigate and analyze.
+### 2. Database Design:
+After several attempts and database design ideas, I finally decided on a single-table database named `celestial_observations` for the following reasons:
 
-3. **Data Analysis**: I conducted data analysis through various SQL queries. These queries were designed to extract specific insights from the dataset, such as the average and standard deviation of photometric filters by class, the identification of celestial objects with the highest redshift, and the distribution of observations across different plates.
+- **Single Table Structure**: Named `celestial_observations`, this approach streamlines querying by removing the need for complex joins.
+- **Efficiency and Clarity**: Focuses on relevant data by excluding non-essential columns, thus optimizing performance and storage. While simple, this design focuses on efficiency and clarity and since all columns directly relate to each observation there is no need to split them up.
+- **Direct Mapping**: Each row in the table directly represents a celestial observation, streamlining the querying process and making the data easier to navigate and analyze.
 
-## What I Learned
+### 3. Data Analysis:
+- I conducted data analysis through various SQL queries. These queries were designed to extract specific insights from the dataset, such as the average and standard deviation of photometric filters by class, the identification of celestial objects with the highest redshift, and the distribution of observations across different plates.
 
-1. **PyMySQL**: I learned how to effectively use PyMySQL to manage all functions of a database. I also explored database outputs other than console by integrating PyMySQL with statistical analysis packages.
+## Learned
 
-2. **Data Visualization Skills**: By presenting my findings through visualizations created using matplotlib.pyplot and seaborn, I gained a deeper appreciation for the power of data visualization in conveying complex information in an accessible and hopefully engaging manner.
+### 1. PyMySQL:
+- I learned how to effectively use PyMySQL to manage all functions of a database. I also explored database outputs other than console by integrating PyMySQL with statistical analysis packages.
 
-3. **Astronomical Insights**: The project deepened my knowledge of celestial objects, and their unique characteristics. Understanding the significance of photometric filters and redshift in astronomy was particularly interesting.
+### 2. Data Visualization Skills:
+- By presenting my findings through visualizations created using matplotlib.pyplot and seaborn, I gained a deeper appreciation for the power of data visualization in conveying complex information in an accessible and hopefully engaging manner.
+
+### 3. Astronomical Insights:
+- The project deepened my knowledge of celestial objects, and their unique characteristics. Understanding the significance of photometric filters and redshift in astronomy was particularly interesting.
 
 ## Why is this data valuable?
 
-1. **Solving Universal Mysteries**: The data provided insights into the characteristics and behaviors of various celestial objects. Understanding these aspects is crucial in the field of astronomy and astrophysics, as it contributes to our knowledge of the universe and our place within it.
+### 1. Solving Universal Mysteries:
+- The data provided insights into the characteristics and behaviors of various celestial objects. Understanding these aspects is crucial in the field of astronomy and astrophysics, as it contributes to our knowledge of the universe and our place within it.
 
-2. **Real-World Applications**: The analysis of such data has real-world implications in the study of the universe's expansion, the life cycle of stars, and the evolution of galaxies. It's fascinating to contribute to a field that has such far-reaching and profound implications.
+### 2. Real-World Applications:
+- The analysis of such data has real-world implications in the study of the universe's expansion, the life cycle of stars, and the evolution of galaxies. It's fascinating to contribute to a field that has such far-reaching and profound implications.
 
-3. **Technical Skill Enhancement**: The project was an excellent opportunity to refine my technical skills in data analysis, SQL, and Python programming. It was rewarding to apply these skills to the field of astronomy which I am passionate about. I hope to work more on the project and later create a neural network using supervised learning to classify the objects.
+### 3. Technical Skill Enhancement:
+- The project was an excellent opportunity to refine my technical skills in data analysis, SQL, and Python programming. It was rewarding to apply these skills to the field of astronomy which I am passionate about. I hope to work more on the project and later create a neural network using supervised learning to classify the objects.
 
 
 
@@ -46,26 +62,8 @@ This project uses the following Python libraries:
 - `createDatabase.py`: Creates database and fills with data from csv
 
 
-## Project Components
 
-### Database Creation
-
-The database schema was designed with the following principles:
-
-- **Single Table Structure**: Named `celestial_observations`, this approach streamlines querying by removing the need for complex joins.
-- **Efficiency and Clarity**: Focuses on relevant data by excluding non-essential columns, thus optimizing performance and storage.
-- **Direct Mapping**: Each row in the table directly represents a celestial observation, making the dataset easy to navigate and analyze.
-
-### Data Importing
-
-Key steps in the data importing process:
-
-- **Data Read**: Loading 'star_classification.csv' into a pandas DataFrame.
-- **Column Selection**: Filtering essential attributes such as 'obj_ID', 'alpha', 'delta', 'u', 'g', 'r', 'i', 'z', 'spec_obj_ID', 'class', 'redshift', 'plate', and 'MJD'.
-- **Batch Insertion**: Utilizing PyMySQL's `executemany` method for efficient data insertion.
-- **Progress Monitoring**: Employing tqdm for real-time progress visualization during data insertion.
-
-### Data Analysis
+## Data Analysis
 
 ## Query 1: Average and Standard Deviation of Photometric Filters by Class
 

@@ -8,7 +8,7 @@ The Star Classification Data Analysis Project is an exploratory and analytical i
 - Conducting extensive data analysis.
 - Presenting findings in a visually appealing and accessible format.
 
-The dataset originates from the Stellar Classification Dataset - SDSS17, available on Kaggle. For more details, visit the dataset page: [Stellar Classification Dataset - SDSS17 on Kaggle](https://www.kaggle.com/datasets/fedesoriano/stellar-classification-dataset-sdss17).
+The dataset originates from the Stellar Classification Dataset - SDSS17 from the Sloan Digital Sky Survey, available on Kaggle. For more details, visit the dataset page: [Stellar Classification Dataset - SDSS17 on Kaggle](https://www.kaggle.com/datasets/fedesoriano/stellar-classification-dataset-sdss17).
 
 ## Dependencies
 
@@ -43,8 +43,6 @@ Key steps in the data importing process:
 
 ### Data Analysis
 
-- **Tools**: Utilizes Python and its libraries (Pandas, NumPy, etc.) for sophisticated data manipulation and analysis.
-- **Objective**: The analysis aims to delve deep into the celestial data, uncovering patterns and deriving meaningful insights. Key areas include classification trends, observational data patterns, and statistical correlations.
 
 The next sections will detail specific queries and analytical findings, showing the complexities and intricacies of celestial object classifications. 
 
@@ -144,9 +142,7 @@ The data shows that stars have an average redshift of 0.000 with the minimum bei
 The data shows that galaxies have an average redshift of 0.422 with the minimum being -0.010 and the maximum being 1.996. This suggests that galaxies are moving away from us, which is expected due to the expansion of the universe. The galaxies shown here are likely at a considerable distance from our own galaxy but not as distant as quasars.
 
 Quasars have an average redshift of They have a much higher average redshift compared to galaxies and stars, which 1.720 with a minimum of 0.000 and a maximum of 7.011. This aligns with the fact that quasars are among the most distant objects observed in the universe. Their high redshift values indicate that they are moving away from us at a much faster rate, which is a reflection of their vast distance and age.
-```
 
-```
 ## Query 5: Class Frequency and Average Values for Photometric Filters
 
 **Purpose**: This query aims to count the number of celestial objects in each class (GALAXY, STAR, QUASAR) within the dataset.
@@ -167,4 +163,3 @@ GROUP BY
 **Analysis**: 
 This query along with the generated plot shows that galaxies are the most populous celestial body in the dataset and probably observable universe with 59445 shown in the dataset. Stars are the next most frequent class with 21594 observations. Quasars fall closely behind with 18961 observations.
 
-```

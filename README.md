@@ -15,12 +15,18 @@ The dataset originates from the Stellar Classification Dataset - SDSS17 from the
 This project uses the following Python libraries:
 
 - `pandas`: Facilitates reading, manipulating, and analyzing data in DataFrame format.
-- `matplotlib.pyplot`: Used for creating static, animated, and interactive visualizations.
+- `matplotlib.pyplot`: Used for creating visualizations.
 - `seaborn`: Enhances matplotlib plots with improved aesthetics and additional plot types.
 - `configparser`: Manages and retrieves database configurations.
 - `PyMySQL`: Connects to the MySQL database and executes SQL statements.
 - `logging`: Handles the logging of errors and information.
 - `os`: Manages directories and file operations.
+
+## Files
+
+- `query.py`: Runs queries and plot generation
+- `createDatabase.py`: Creates the database and fills with data from csv
+
 
 ## Project Components
 

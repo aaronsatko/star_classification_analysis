@@ -15,9 +15,12 @@ The dataset originates from the Stellar Classification Dataset - SDSS17, availab
 This project uses the following Python libraries:
 
 - `pandas`: Facilitates reading, manipulating, and analyzing data in DataFrame format.
+- `matplotlib.pyplot`: Used for creating static, animated, and interactive visualizations.
+- `seaborn`: Enhances matplotlib plots with improved aesthetics and additional plot types.
 - `configparser`: Manages and retrieves database configurations.
 - `PyMySQL`: Connects to the MySQL database and executes SQL statements.
-- `tqdm`: Offers a progress meter for data insertion.
+- `logging`: Handles the logging of errors and information.
+- `os`: Manages directories and file operations.
 
 ## Project Components
 
@@ -43,7 +46,7 @@ Key steps in the data importing process:
 - **Tools**: Utilizes Python and its libraries (Pandas, NumPy, etc.) for sophisticated data manipulation and analysis.
 - **Objective**: The analysis aims to delve deep into the celestial data, uncovering patterns and deriving meaningful insights. Key areas include classification trends, observational data patterns, and statistical correlations.
 
-The subsequent sections will detail specific queries and analytical findings, shedding light on the complexities and intricacies of celestial object classifications. 
+The next sections will detail specific queries and analytical findings, showing the complexities and intricacies of celestial object classifications. 
 
 ---
 
@@ -52,7 +55,7 @@ The subsequent sections will detail specific queries and analytical findings, sh
 ```markdown
 # Celestial Observations Analysis
 
-This document outlines various SQL queries used for analyzing celestial observation data. Each query is designed to extract specific insights from the dataset, and there's a dedicated section for analysis based on the query results.
+This document outlines various SQL queries used for analyzing celestial observation data. Each query is designed to extract specific insights from the dataset. The data from the queries is then directly converted into a visual plot to further analyze the data.
 
 ## Query 1: Average and Standard Deviation of Photometric Filters by Class
 
@@ -80,7 +83,7 @@ GROUP BY class;
 
 
 **Analysis**: 
-_Write your analysis here._
+This grouped bar chart showing the average values of different photometric filters (U, G, R, I, Z) for three classes of celestial objects: GALAXY, QSO (quasi-stellar object or quasar), and STAR. Each filter's average value is represented by a bar in a unique color. The standard deviation in the plot indicates the amount of variation or dispersion of the filter values from their average (mean). Specifically, it shows how much the individual measurements of a particular filter for a class (GALAXY, QSO, or STAR) deviate from the average value of that filter for that class. The high standard deviation in the STAR's ultraviolet, green, and infrared shows the diverse variability of subtypes in the star class. Stars have a wide variety of types, sizes and temperatures which explains the wide standard deviation.
 
 ## Query 2: Celestial Objects with the Highest Redshift
 
@@ -97,7 +100,7 @@ LIMIT 10;
 ![Alt text](query_generated_plots/highest_redshift.png)
 
 **Analysis**: 
-_Write your analysis here._
+This query shows the top ten plates with the highest redshift. Each of these plates are the home to the oldest on average objects in the sky. 
 
 ## Query 3: Distribution of Observations Across Different Plates
 
@@ -117,14 +120,13 @@ UNION ALL
  LIMIT 10);
 ```
 ![Alt text](output_screenshots/query3.png)
-![Alt text](query_generated_plots/distribution_across_plates.png)
+![Alt text](query_generated_plots/plates_distribution.png)
 
 **Analysis**: 
-_Write your analysis here._
-
+The query accompanied by the plot shows the top 10 highest and lowest plates by redshift. This shows the large variation where the most populous plate has 98 objects and the least populous have 1.
 ## Query 4: Average Redshift Values Comparison
 
-**Purpose**: Compares the average redshift values between galaxies, stars, and quasars, including the minimum and maximum values for each.
+**Purpose**: Compares the average redshift values between galaxies, stars, and quasars, along with the minimum and maximum values for each.
 
 **SQL Query**:
 ```sql
@@ -137,28 +139,23 @@ GROUP BY class;
 ![Alt text](query_generated_plots/avg_redshift_comparison.png)
 
 **Analysis**: 
-    Stars: Stars have an average redshift of 0, indicating that they are neither receding nor approaching us at significant velocities on a cosmic scale. This is consistent with the fact that stars are typically part of our own galaxy or local group, where the expansion of the universe has a negligible effect on their observed redshift.
+The data shows that stars have an average redshift of 0.000 with the minimum being -0.004 and the maximum being 0.004, indicating that they are neither receding nor approaching us at significant velocities on a cosmic scale. This is consistent with the fact that stars are typically part of our own galaxy or local group, where the expansion of the universe has a negligible effect on their observed redshift.
 
-    Galaxies: Galaxies exhibit a greater redshift than stars, with an average value just above 0.25. This suggests that galaxies are moving away from us, which is expected due to the expansion of the universe. The galaxies shown here are likely at a considerable distance from our own galaxy but not as distant as quasars.
+The data shows that galaxies have an average redshift of 0.422 with the minimum being -0.010 and the maximum being 1.996. This suggests that galaxies are moving away from us, which is expected due to the expansion of the universe. The galaxies shown here are likely at a considerable distance from our own galaxy but not as distant as quasars.
 
-    Quasars (QSO): They have a much higher average redshift compared to galaxies and stars, which aligns with the fact that quasars are among the most distant objects observed in the universe. Their high redshift values indicate that they are moving away from us at a much faster rate, which is also a reflection of their vast distance and age.
+Quasars have an average redshift of They have a much higher average redshift compared to galaxies and stars, which 1.720 with a minimum of 0.000 and a maximum of 7.011. This aligns with the fact that quasars are among the most distant objects observed in the universe. Their high redshift values indicate that they are moving away from us at a much faster rate, which is a reflection of their vast distance and age.
 ```
 
 ```
 ## Query 5: Class Frequency and Average Values for Photometric Filters
 
-**Purpose**: This query aims to count the number of celestial objects in each class (galaxy, star, quasar) within the dataset and calculate the average values for different photometric filters. This provides insight into the distribution and photometric characteristics of different celestial object classes.
+**Purpose**: This query aims to count the number of celestial objects in each class (GALAXY, STAR, QUASAR) within the dataset.
 
 **SQL Query**:
 ```sql
 SELECT
   class,
-  COUNT(*) AS frequency,
-  AVG(u) AS avg_u,
-  AVG(g) AS avg_g,
-  AVG(r) AS avg_r,
-  AVG(i) AS avg_i,
-  AVG(z) AS avg_z
+  COUNT(*) AS frequency
 FROM
   celestial_observations
 GROUP BY
@@ -168,6 +165,6 @@ GROUP BY
 ![Alt text](query_generated_plots/class_frequency.png)
 
 **Analysis**: 
-This query along with the generated plot shows that galaxies are the most populous celestial body in the dataset and observable universe. Quasars are the next most frequent class
+This query along with the generated plot shows that galaxies are the most populous celestial body in the dataset and probably observable universe with 59445 shown in the dataset. Stars are the next most frequent class with 21594 observations. Quasars fall closely behind with 18961 observations.
 
 ```

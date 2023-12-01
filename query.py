@@ -160,8 +160,7 @@ predefined_queries = {
            FROM celestial_observations 
            GROUP BY class"""),
     5: ("Count and Average Values for Each Class",
-        """SELECT class, COUNT(*) AS frequency, AVG(u) AS avg_u, AVG(g) AS avg_g, 
-           AVG(r) AS avg_r, AVG(i) AS avg_i, AVG(z) AS avg_z 
+        """SELECT class, COUNT(*) AS frequency
            FROM celestial_observations 
            GROUP BY class""")
 }

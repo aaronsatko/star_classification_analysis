@@ -44,16 +44,10 @@ Key steps in the data importing process:
 ### Data Analysis
 
 
-The next sections will detail specific queries and analytical findings, showing the complexities and intricacies of celestial object classifications. 
-
----
+The next sections will detail specific queries and analytical findings, showing the complexities and intricacies of celestial object classifications. This document outlines various SQL queries used for analyzing celestial observation data. Each query is designed to extract specific insights from the dataset. The data from the queries is then directly converted into a visual plot to further analyze the data.
 
 
 
-```markdown
-# Celestial Observations Analysis
-
-This document outlines various SQL queries used for analyzing celestial observation data. Each query is designed to extract specific insights from the dataset. The data from the queries is then directly converted into a visual plot to further analyze the data.
 
 ## Query 1: Average and Standard Deviation of Photometric Filters by Class
 
